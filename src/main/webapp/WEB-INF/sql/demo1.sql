@@ -1,0 +1,509 @@
+-- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
+--
+-- Host: 127.0.0.1    Database: demo1
+-- ------------------------------------------------------
+-- Server version	8.0.36
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `cart`
+--
+
+DROP TABLE IF EXISTS `cart`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `cart` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_info_id` bigint DEFAULT NULL,
+  `user_id` bigint DEFAULT NULL,
+  `total_price` double NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK7s1e5mfo1p7ixxi3dflwn75rg` (`user_info_id`),
+  KEY `FK3oexs31qtfpym0v38fc3o951i` (`user_id`),
+  CONSTRAINT `FK3oexs31qtfpym0v38fc3o951i` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`id`),
+  CONSTRAINT `FK7s1e5mfo1p7ixxi3dflwn75rg` FOREIGN KEY (`user_info_id`) REFERENCES `user_info` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cart`
+--
+
+LOCK TABLES `cart` WRITE;
+/*!40000 ALTER TABLE `cart` DISABLE KEYS */;
+INSERT INTO `cart` VALUES (10,NULL,1,274),(11,NULL,9,144);
+/*!40000 ALTER TABLE `cart` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `cart_item`
+--
+
+DROP TABLE IF EXISTS `cart_item`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `cart_item` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `quantity` int NOT NULL,
+  `cart_id` bigint DEFAULT NULL,
+  `product_info_id` bigint DEFAULT NULL,
+  `product_id` bigint NOT NULL,
+  `price` float DEFAULT NULL,
+  `receipt_id` bigint DEFAULT NULL,
+  `cart_item_id` bigint DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK1uobyhgl1wvgt1jpccia8xxs3` (`cart_id`),
+  KEY `FK1ohnp2xpjyntaiqmqxe2lyxxj` (`product_info_id`),
+  KEY `FKtbm3puh4cpldywrpuisljh6x` (`product_id`),
+  KEY `FKi35gmu6b09121aygv9scxgb6p` (`receipt_id`),
+  KEY `FKtb6rxa5qxpj7856jyrdyy3j1m` (`cart_item_id`),
+  CONSTRAINT `FK1ohnp2xpjyntaiqmqxe2lyxxj` FOREIGN KEY (`product_info_id`) REFERENCES `product_info` (`id`),
+  CONSTRAINT `FK1uobyhgl1wvgt1jpccia8xxs3` FOREIGN KEY (`cart_id`) REFERENCES `cart` (`id`),
+  CONSTRAINT `FKi35gmu6b09121aygv9scxgb6p` FOREIGN KEY (`receipt_id`) REFERENCES `receipt` (`receipt_id`),
+  CONSTRAINT `FKtb6rxa5qxpj7856jyrdyy3j1m` FOREIGN KEY (`cart_item_id`) REFERENCES `receipt` (`receipt_id`),
+  CONSTRAINT `FKtbm3puh4cpldywrpuisljh6x` FOREIGN KEY (`product_id`) REFERENCES `product_info` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cart_item`
+--
+
+LOCK TABLES `cart_item` WRITE;
+/*!40000 ALTER TABLE `cart_item` DISABLE KEYS */;
+INSERT INTO `cart_item` VALUES (59,1,10,NULL,32,54,NULL,NULL),(60,1,10,NULL,31,120,NULL,NULL),(61,1,10,NULL,30,100,NULL,NULL),(62,1,11,NULL,30,100,NULL,NULL),(63,1,11,NULL,29,44,NULL,NULL);
+/*!40000 ALTER TABLE `cart_item` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `checkout`
+--
+
+DROP TABLE IF EXISTS `checkout`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `checkout` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `payment_method` varchar(255) DEFAULT NULL,
+  `cart_id` bigint DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKs4p1r23jcw3r43psmma1enoe8` (`cart_id`),
+  CONSTRAINT `FKs4p1r23jcw3r43psmma1enoe8` FOREIGN KEY (`cart_id`) REFERENCES `cart` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `checkout`
+--
+
+LOCK TABLES `checkout` WRITE;
+/*!40000 ALTER TABLE `checkout` DISABLE KEYS */;
+/*!40000 ALTER TABLE `checkout` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `hibernate_sequence`
+--
+
+DROP TABLE IF EXISTS `hibernate_sequence`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `hibernate_sequence` (
+  `next_val` bigint DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `hibernate_sequence`
+--
+
+LOCK TABLES `hibernate_sequence` WRITE;
+/*!40000 ALTER TABLE `hibernate_sequence` DISABLE KEYS */;
+INSERT INTO `hibernate_sequence` VALUES (10);
+/*!40000 ALTER TABLE `hibernate_sequence` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `product_group`
+--
+
+DROP TABLE IF EXISTS `product_group`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `product_group` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `create_by` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `create_time` datetime(6) DEFAULT NULL,
+  `group_product_name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `quantity` int DEFAULT NULL,
+  `status` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `product_group`
+--
+
+LOCK TABLES `product_group` WRITE;
+/*!40000 ALTER TABLE `product_group` DISABLE KEYS */;
+INSERT INTO `product_group` VALUES (5,'supper_admin','2024-08-05 05:39:31.783000','Mỹ phẩm',100,1),(6,'supper_admin','2024-08-05 05:39:40.161000','Đồ gia dụng',500,1),(7,'supper_admin','2024-08-05 05:39:49.614000','Thời trang',200,1),(8,'supper_admin','2024-08-05 05:40:03.546000','Đồ công nghệ',300,1),(9,'supper_admin','2024-08-05 05:40:35.293000','Đồ thể thao',400,1),(10,'supper_admin','2024-08-05 05:40:50.826000','Đồ chơi trẻ em',150,0),(11,'supper_admin','2024-08-05 05:41:12.756000','Đồ dùng học tập',250,0),(12,'supper_admin','2024-08-05 05:41:46.640000','Thực phẩm',450,1),(13,'supper_admin','2024-08-05 05:42:20.805000','Trang trí',345,1),(14,'supper_admin','2024-08-05 05:43:17.700000','Oto',123,1);
+/*!40000 ALTER TABLE `product_group` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `product_info`
+--
+
+DROP TABLE IF EXISTS `product_info`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `product_info` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `create_by` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `create_time` datetime(6) DEFAULT NULL,
+  `group_id` bigint NOT NULL,
+  `product_date` datetime(6) DEFAULT NULL,
+  `product_desc` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `product_name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `product_origin` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `status` int DEFAULT NULL,
+  `price` float DEFAULT NULL,
+  `image` longblob,
+  `product_image` varchar(255) DEFAULT NULL,
+  `image_path` varchar(255) DEFAULT NULL,
+  `image_name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `product_info`
+--
+
+LOCK TABLES `product_info` WRITE;
+/*!40000 ALTER TABLE `product_info` DISABLE KEYS */;
+INSERT INTO `product_info` VALUES (18,NULL,'2024-08-05 05:45:42.524000',8,'2024-07-24 17:00:00.000000','abcd','macbook','USA',1,234,NULL,NULL,NULL,'0011450_macbook-pro-16-inch-m2-max-38-core-32gb-1tb.jpeg'),(19,NULL,'2024-08-05 05:46:23.357000',5,'2024-07-28 17:00:00.000000','xyz','son','Hàn Quốc',1,23,NULL,NULL,NULL,'18058_S_01.jpg'),(20,NULL,'2024-08-05 05:47:18.078000',5,'2024-07-01 17:00:00.000000','abcd','kẻ mắt','Hàn Quốc',1,12,NULL,NULL,NULL,'F000088-1-6.jpg'),(21,NULL,'2024-08-05 05:48:41.941000',8,'2024-07-06 17:00:00.000000','abcdef','Dell inprion 7559','USA',1,654,NULL,NULL,NULL,'68162_laptop_dell_inspiron_7506_2_in_1_i7506_6.png'),(22,NULL,'2024-08-05 05:51:36.404000',14,'2024-06-30 17:00:00.000000','abcded','Oto KIA','Hàn Quốc',1,2345,NULL,NULL,NULL,'k3-do.png'),(23,NULL,'2024-08-05 05:55:03.276000',14,'2024-07-30 17:00:00.000000','xyz','Oto KN','Trung Quốc',1,2345,NULL,NULL,NULL,'images.jpg'),(24,NULL,'2024-08-05 05:57:16.768000',13,'2024-07-15 17:00:00.000000','abcdef','Bình trang trí','Việt Nam',1,54,NULL,NULL,NULL,'decor-trang-tri-15.jpg'),(25,NULL,'2024-08-05 05:57:51.968000',13,'2024-07-15 17:00:00.000000','abcd','Đồ trang trí để bàn','Việt Nam',1,43,NULL,NULL,NULL,'DC09.jpg'),(26,NULL,'2024-08-05 05:59:48.658000',12,'2024-06-29 17:00:00.000000','abcd','Thực phẩm chức năng','Việt Nam',1,87,NULL,NULL,NULL,'vien-uong-rau-cu-4.jpg'),(27,NULL,'2024-08-05 06:03:48.682000',6,'2024-07-15 17:00:00.000000','abcd','Bếp từ','Việt Nam',1,78,NULL,NULL,NULL,'Bep-dien-tu-doi-kangaroo-kg865i.jpg'),(28,NULL,'2024-08-05 06:05:11.211000',7,'2024-07-27 17:00:00.000000','abc','Quấn áo nam','Việt Nam',1,89,NULL,NULL,NULL,'c7db377b177fc8e2ff75a769022dcc23.jpg'),(29,NULL,'2024-08-05 06:05:36.878000',7,'2024-08-01 17:00:00.000000','abc','Quần áo nữ','Hàn Quốc',1,44,NULL,NULL,NULL,'fa067f9c701d940ba98ccb05d2d2f438.jpg'),(30,NULL,'2024-08-05 06:06:40.352000',7,'2024-07-13 17:00:00.000000','abc','Quần áo hàn quốc','Hàn Quốc',1,100,NULL,NULL,NULL,'230e56e49a07865452fdb6081478dbb1.jpg'),(31,NULL,'2024-08-05 06:09:51.625000',9,'2024-07-07 17:00:00.000000','abcd','Vợt cầu lông','Trung Quốc',1,120,NULL,NULL,NULL,'yonex-nanoflare-1000-game.jpg'),(32,NULL,'2024-08-05 06:10:55.126000',9,'2024-08-02 17:00:00.000000','abcd','Giày cầu lông','Nhật Bản',1,54,NULL,NULL,NULL,'a7a416babf1e67403e0f.jpg');
+/*!40000 ALTER TABLE `product_info` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `product_info_dto`
+--
+
+DROP TABLE IF EXISTS `product_info_dto`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `product_info_dto` (
+  `id` bigint NOT NULL,
+  `create_by` varchar(255) DEFAULT NULL,
+  `create_time` datetime(6) DEFAULT NULL,
+  `group_id` bigint NOT NULL,
+  `product_date` date DEFAULT NULL,
+  `product_desc` varchar(255) DEFAULT NULL,
+  `product_name` varchar(255) DEFAULT NULL,
+  `product_origin` varchar(255) DEFAULT NULL,
+  `status` int DEFAULT NULL,
+  `price` float DEFAULT NULL,
+  `image` tinyblob,
+  `product_image` varchar(255) DEFAULT NULL,
+  `image_path` varchar(255) DEFAULT NULL,
+  `image_name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `product_info_dto`
+--
+
+LOCK TABLES `product_info_dto` WRITE;
+/*!40000 ALTER TABLE `product_info_dto` DISABLE KEYS */;
+/*!40000 ALTER TABLE `product_info_dto` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `product_module`
+--
+
+DROP TABLE IF EXISTS `product_module`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `product_module` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `icon` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `parent_product_id` bigint DEFAULT NULL,
+  `place` bigint NOT NULL,
+  `status` int DEFAULT NULL,
+  `url` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `product_module`
+--
+
+LOCK TABLES `product_module` WRITE;
+/*!40000 ALTER TABLE `product_module` DISABLE KEYS */;
+/*!40000 ALTER TABLE `product_module` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `receipt`
+--
+
+DROP TABLE IF EXISTS `receipt`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `receipt` (
+  `receipt_id` bigint NOT NULL,
+  `receipt_address` varchar(255) DEFAULT NULL,
+  `receipt_date` datetime(6) DEFAULT NULL,
+  `receipt_first_name` varchar(255) DEFAULT NULL,
+  `receipt_last_name` varchar(255) DEFAULT NULL,
+  `receipt_phone` varchar(255) DEFAULT NULL,
+  `receipt_status` bit(1) NOT NULL,
+  `user_id` bigint DEFAULT NULL,
+  PRIMARY KEY (`receipt_id`),
+  KEY `FKnsitn2khc8yqsk8pvhfocl3wv` (`user_id`),
+  CONSTRAINT `FKnsitn2khc8yqsk8pvhfocl3wv` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `receipt`
+--
+
+LOCK TABLES `receipt` WRITE;
+/*!40000 ALTER TABLE `receipt` DISABLE KEYS */;
+/*!40000 ALTER TABLE `receipt` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `spring_session`
+--
+
+DROP TABLE IF EXISTS `spring_session`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `spring_session` (
+  `PRIMARY_ID` char(36) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
+  `SESSION_ID` char(36) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
+  `CREATION_TIME` bigint NOT NULL,
+  `LAST_ACCESS_TIME` bigint NOT NULL,
+  `MAX_INACTIVE_INTERVAL` int NOT NULL,
+  `EXPIRY_TIME` bigint NOT NULL,
+  `PRINCIPAL_NAME` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
+  PRIMARY KEY (`PRIMARY_ID`),
+  UNIQUE KEY `SPRING_SESSION_IX1` (`SESSION_ID`),
+  KEY `SPRING_SESSION_IX2` (`EXPIRY_TIME`),
+  KEY `SPRING_SESSION_IX3` (`PRINCIPAL_NAME`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `spring_session`
+--
+
+LOCK TABLES `spring_session` WRITE;
+/*!40000 ALTER TABLE `spring_session` DISABLE KEYS */;
+INSERT INTO `spring_session` VALUES ('69aa4ba5-b27a-48a8-9345-d34dd23d0bae','803e096e-bdc0-48c5-bafa-7eaeca1f4b39',1722827656133,1722840413013,90000,1722930413013,NULL);
+/*!40000 ALTER TABLE `spring_session` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `spring_session_attributes`
+--
+
+DROP TABLE IF EXISTS `spring_session_attributes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `spring_session_attributes` (
+  `SESSION_PRIMARY_ID` char(36) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
+  `ATTRIBUTE_NAME` varchar(200) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
+  `ATTRIBUTE_BYTES` blob NOT NULL,
+  PRIMARY KEY (`SESSION_PRIMARY_ID`,`ATTRIBUTE_NAME`),
+  CONSTRAINT `SPRING_SESSION_ATTRIBUTES_FK` FOREIGN KEY (`SESSION_PRIMARY_ID`) REFERENCES `spring_session` (`PRIMARY_ID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `spring_session_attributes`
+--
+
+LOCK TABLES `spring_session_attributes` WRITE;
+/*!40000 ALTER TABLE `spring_session_attributes` DISABLE KEYS */;
+INSERT INTO `spring_session_attributes` VALUES ('69aa4ba5-b27a-48a8-9345-d34dd23d0bae','cartItems',_binary '�\�\0sr\0java.util.HashMap\��\�`\�\0F\0\nloadFactorI\0	thresholdxp?@\0\0\0\0\0\0w\0\0\0\0\0\0\0x'),('69aa4ba5-b27a-48a8-9345-d34dd23d0bae','fullName',_binary '�\�\0t\0supper_admin'),('69aa4ba5-b27a-48a8-9345-d34dd23d0bae','totalPrice',_binary '�\�\0sr\0java.lang.Integer⠤���8\0I\0valuexr\0java.lang.Number����\��\0\0xp\0\0\0\0'),('69aa4ba5-b27a-48a8-9345-d34dd23d0bae','userId',_binary '�\�\0sr\0java.lang.Long;�\�̏#\�\0J\0valuexr\0java.lang.Number����\��\0\0xp\0\0\0\0\0\0\0'),('69aa4ba5-b27a-48a8-9345-d34dd23d0bae','userModuleMenus',_binary '�\�\0sr\0java.util.ArrayListx�\��\�a�\0I\0sizexp\0\0\0w\0\0\0sr\0com.project.table.UserModule�]T��}�\0\0J\0placeL\0icont\0Ljava/lang/String;L\0idt\0Ljava/lang/Long;L\0nameq\0~\0L\0parentIdq\0~\0L\0statust\0Ljava/lang/Integer;L\0urlq\0~\0xp\0\0\0\0\0\0\0t\0nav-icon fas fa-tachometer-altsr\0java.lang.Long;�\�̏#\�\0J\0valuexr\0java.lang.Number����\��\0\0xp\0\0\0\0\0\0\0t\0Quản trịsq\0~\0\0\0\0\0\0\0\0\0sr\0java.lang.Integer⠤���8\0I\0valuexq\0~\0	\0\0\0t\0\0sq\0~\0\0\0\0\0\0\0\0t\0nav-icon fas fa-tachometer-altsq\0~\0\0\0\0\0\0\0\0t\0Quản lý sản phẩmq\0~\0q\0~\0t\0\0sq\0~\0\0\0\0\0\0\0\0t\0nav-icon fas fa-tachometer-altsq\0~\0\0\0\0\0\0\0\0t\0Quản lý giỏ hàngq\0~\0q\0~\0psq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0t\0Người dùngq\0~\0\nq\0~\0t\0/nguoi-dungsq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0t\0Sản phẩmq\0~\0q\0~\0t\0	/san-phamsq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0t\0Nhóm người dùngq\0~\0\nq\0~\0t\0/nhom-nguoi-dungsq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0t\0Nhóm sản phẩmq\0~\0q\0~\0t\0/nhom-san-phamsq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0\nt\0\rHome Shoppingq\0~\0sq\0~\0\r\0\0\0t\0/home-shoppingx'),('69aa4ba5-b27a-48a8-9345-d34dd23d0bae','username',_binary '�\�\0t\0supper_admin');
+/*!40000 ALTER TABLE `spring_session_attributes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_group`
+--
+
+DROP TABLE IF EXISTS `user_group`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_group` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `create_by` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  `description` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `group_name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `status` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_group`
+--
+
+LOCK TABLES `user_group` WRITE;
+/*!40000 ALTER TABLE `user_group` DISABLE KEYS */;
+INSERT INTO `user_group` VALUES (9,NULL,'2024-08-05 05:00:08','quản lý người dùng và sản phẩm','supper_admin',1),(10,'supper_admin','2024-08-05 05:28:26','chỉ có thể mua hàng  và thanh toán','Người dùng',1);
+/*!40000 ALTER TABLE `user_group` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_group_permission`
+--
+
+DROP TABLE IF EXISTS `user_group_permission`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_group_permission` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `group_id` bigint NOT NULL,
+  `module_id` bigint NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_group_permission`
+--
+
+LOCK TABLES `user_group_permission` WRITE;
+/*!40000 ALTER TABLE `user_group_permission` DISABLE KEYS */;
+INSERT INTO `user_group_permission` VALUES (1,1,2),(2,1,3),(3,1,5),(4,1,6),(5,1,8),(6,1,9),(7,1,10),(8,10,10);
+/*!40000 ALTER TABLE `user_group_permission` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_info`
+--
+
+DROP TABLE IF EXISTS `user_info`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_info` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `create_by` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `full_name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `group_id` bigint NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `status` int DEFAULT NULL,
+  `username` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `address` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `phone` varchar(11) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_info`
+--
+
+LOCK TABLES `user_info` WRITE;
+/*!40000 ALTER TABLE `user_info` DISABLE KEYS */;
+INSERT INTO `user_info` VALUES (1,NULL,'2024-08-05 05:00:08',NULL,'supper_admin',1,'a02b3395d3b5297ed2bf339be5b915',1,'supper_admin','Hà Nội','0123456789'),(9,'supper_admin','2024-08-05 05:30:04','caovanquyena11@gmail.com','Cao Van Quyen',10,'25d55ad283aa40af464c76d713c7ad',1,'user','mao dien thuan thanh bac ninh trai dat giai ngan ha','0375549373');
+/*!40000 ALTER TABLE `user_info` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_info_dto`
+--
+
+DROP TABLE IF EXISTS `user_info_dto`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_info_dto` (
+  `id` bigint NOT NULL,
+  `create_by` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  `don_vi_id` bigint DEFAULT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
+  `full_name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
+  `group_id` bigint NOT NULL,
+  `status` int DEFAULT NULL,
+  `ten_don_vi` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
+  `username` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
+  `address` varchar(255) COLLATE utf8mb3_bin DEFAULT NULL,
+  `phone` varchar(255) COLLATE utf8mb3_bin DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_info_dto`
+--
+
+LOCK TABLES `user_info_dto` WRITE;
+/*!40000 ALTER TABLE `user_info_dto` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_info_dto` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_module`
+--
+
+DROP TABLE IF EXISTS `user_module`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_module` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `icon` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `parent_id` bigint DEFAULT NULL,
+  `place` bigint NOT NULL,
+  `status` int DEFAULT NULL,
+  `url` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_module`
+--
+
+LOCK TABLES `user_module` WRITE;
+/*!40000 ALTER TABLE `user_module` DISABLE KEYS */;
+INSERT INTO `user_module` VALUES (1,'nav-icon fas fa-tachometer-alt','Quản trị',0,1,1,''),(2,NULL,'Người dùng',1,2,1,'/nguoi-dung'),(3,NULL,'Nhóm người dùng',1,3,1,'/nhom-nguoi-dung'),(4,'nav-icon fas fa-tachometer-alt','Quản lý sản phẩm',0,1,1,''),(5,NULL,'Sản phẩm',4,2,1,'/san-pham'),(6,NULL,'Nhóm sản phẩm',4,3,1,'/nhom-san-pham'),(7,'nav-icon fas fa-tachometer-alt','Quản lý giỏ hàng',0,1,1,NULL),(10,NULL,'Home Shopping',7,4,2,'/home-shopping');
+/*!40000 ALTER TABLE `user_module` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2024-08-05 13:58:30
