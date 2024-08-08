@@ -61,6 +61,7 @@ public class HomeShoppingController extends BaseController{
         }
 
         forwartParams(allParams, model);
+        model.addAttribute("userId", userId);
         return "cart/homeshopping";
     }
 

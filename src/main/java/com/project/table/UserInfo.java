@@ -64,5 +64,6 @@ public class UserInfo {
 	String email;
 
 	@OneToMany(mappedBy = "userInfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	private List<Receipt> Receipts = new ArrayList<>();
+	private List<Checkout> Checkouts = new ArrayList<>();
+
 }

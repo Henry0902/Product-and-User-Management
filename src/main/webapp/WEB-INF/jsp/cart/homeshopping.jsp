@@ -35,7 +35,7 @@
                     </ul>
                 </li>
             </ul>
-            <form action="${pageContext.request.contextPath}/cart/${userId}" method="get" class="d-flex">
+            <form action="${pageContext.request.contextPath}/cart?userId=${userId}" method="post" class="d-flex">
                 <button class="btn btn-outline-dark" type="submit">
                     <i class="bi-cart-fill me-1" ></i>
                     Cart
@@ -107,7 +107,7 @@
                         </div>
                         <!-- Product actions-->
                         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                            <form action="${pageContext.request.contextPath}/cart/add-to-cart/${userId}" method="post">
+                            <form action="${pageContext.request.contextPath}/cart/add-to-cart?userId=${userId}&productId=${item.id}" method="post">
                                 <input type="hidden" name="productId" value="${item.id}" />
                                 <input type="hidden" name="userId" value="${userId}"/>
                                 <input type="hidden" name="quantity" value="1" />

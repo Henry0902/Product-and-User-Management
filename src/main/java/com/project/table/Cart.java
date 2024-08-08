@@ -32,6 +32,12 @@ public class Cart implements Serializable {
 
     private double totalPrice;
 
+    // Method to clear items
+    public void clearItems() {
+        items.clear();
+        // Optionally, update total price to 0
+        this.totalPrice = 0;
+    }
 
     // getters and setters
 }

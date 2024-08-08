@@ -126,7 +126,7 @@
 												<h5>€ ${totalPrice + 5}</h5>
 											</div>
 
-												<a type="submit" href="${pageContext.request.contextPath}/checkout/${userId}" data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Thanh Toán</a>
+												<a type="submit" href="${pageContext.request.contextPath}/checkout?userId=${userId}" data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Thanh Toán</a>
 
 										</div>
 									</div>

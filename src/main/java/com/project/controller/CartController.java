@@ -48,12 +48,11 @@ public class CartController extends BaseController{
     ProductGroupReponsitory productGroupRepository;
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    @GetMapping(value = "/cart/{userId}")
+    @GetMapping(value = "/cart")
     public String sanPham(Model model, HttpServletRequest req,
-                          @PathVariable Long userId,
                           @RequestParam Map<String, String> allParams) {
         handlingGet(allParams, model, req);
-        Cart cart = cartRepository.findByUserInfoId(userId);
+        Cart cart = cartRepository.findByUserInfoId(Long.valueOf(allParams.get("userId")));
         if (cart != null) {
             model.addAttribute("cartItems", cart.getItems());
             model.addAttribute("totalPrice", cart.getTotalPrice());
@@ -62,6 +61,7 @@ public class CartController extends BaseController{
             model.addAttribute("totalPrice", 0);
         }
         forwartParams(allParams, model);
+        model.addAttribute("userId", cart.getUserInfo().getId());
         return "cart/cart";
     }
 
@@ -87,25 +87,40 @@ public class CartController extends BaseController{
         model.addAttribute("productInfos", productInfos.getContent());
     }
 
+    @PostMapping("/cart")
+    public String createCart(@RequestParam Map<String, String> allParams) {
 
-    @PostMapping("/cart/add-to-cart/{userId}")
-    public String addToCart(@PathVariable Long userId,
-                            @RequestParam Long productId,
-                            @RequestParam int quantity, HttpSession session) {
 
-        Cart cart = cartRepository.findByUserInfoId(userId);
+        UserInfo userInfo = userInfoRepository.findById(Long.valueOf(allParams.get("userId")))
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        Cart cart = cartRepository.findByUserInfoId(Long.valueOf(allParams.get("userId")));
         if (cart == null) {
             cart = new Cart();
-            UserInfo userInfo = userInfoRepository.findById(userId)
+            cart.setUserInfo(userInfo);
+            cartRepository.save(cart);
+        }
+
+        return "redirect:/cart?userId=" + allParams.get("userId");
+    }
+
+    @PostMapping("/cart/add-to-cart")
+    public String addToCart(@RequestParam Map<String, String> allParams,
+                            @RequestParam int quantity, HttpSession session) {
+
+        Cart cart = cartRepository.findByUserInfoId(Long.valueOf(allParams.get("userId")));
+        if (cart == null) {
+            cart = new Cart();
+            UserInfo userInfo = userInfoRepository.findById(Long.valueOf(allParams.get("userId")))
                     .orElseThrow(() -> new ResourceNotFoundException("User not found"));
             cart.setUserInfo(userInfo);
             cartRepository.save(cart);
         }
 
-        ProductInfo productInfo = productInfoRepository.findById(productId)
+        ProductInfo productInfo = productInfoRepository.findById(Long.valueOf(allParams.get("productId")))
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        CartItem cartItem = cartItemRepository.findByCartIdAndProductInfoId(cart.getId(), productId);
+        CartItem cartItem = cartItemRepository.findByCartIdAndProductInfoId(cart.getId(), productInfo.getId());
         if (cartItem != null) {
             cartItem.setQuantity(cartItem.getQuantity() + quantity);
             cartItemRepository.save(cartItem);
@@ -121,7 +136,7 @@ public class CartController extends BaseController{
         recalculateTotalPrice(cart);
         cartRepository.save(cart);
 
-        return "redirect:/cart/" + userId;
+        return "redirect:/cart?userId=" + allParams.get("userId");
     }
 
     private void recalculateTotalPrice(Cart cart) {

@@ -26,8 +26,8 @@ public class CartItem implements Serializable {
     private Cart cart;
 
     @ManyToOne
-    @JoinColumn(name = "receipt_id", referencedColumnName = "receiptId")
-    private Receipt receipt;
+    @JoinColumn(name = "checkout_id", referencedColumnName = "id")
+    private Checkout checkout;
 
 
     private int quantity;

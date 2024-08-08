@@ -77,45 +77,45 @@
 			</div>
 			<div class="col-md-8 order-md-1">
 				<h4 class="mb-3">Billing address</h4>
-				<springForm:form method="POST" action="${contextPath}/checkout" id='submitFormModal' modelAttribute="receipt">
+				<springForm:form method="POST" action="${pageContext.request.contextPath}/checkout?cartId=${cartId}&userId=${userId}" id='submitFormModal' modelAttribute="Checkout">
 					<div class="row">
 						<div class="col-md-6 mb-3">
-							<label for="firstname" id="firstname">First name</label>
-							<input type="text" class="form-control" value="${Receipt.receiptFirstName}" placeholder="" name="firstname" required>
-							<div class="invalid-feedback">Valid first name is required.</div>
+							<label for="firstName">First name</label>
+							<input type="text" class="form-control" value="${Checkout.firstName}" id="firstName" placeholder="" name="firstName" required>
+							<div class="invalid-feedback">Valid last name is required.</div>
 						</div>
 						<div class="col-md-6 mb-3">
 							<label for="lastName">Last name</label>
-							<input type="text" class="form-control" value="${Receipt.receiptLastName}" id="lastName" placeholder="" name="lastName" required>
+							<input type="text" class="form-control" value="${Checkout.lastName}" id="lastName" placeholder="" name="lastName" required>
 							<div class="invalid-feedback">Valid last name is required.</div>
 						</div>
 					</div>
 					<div class="mb-3">
 						<label for="phone" id="phone">Phone <span class="text-muted"></span></label>
-						<input type="text" class="form-control" value="${Receipt.receiptPhone}" placeholder="(+84)" name="phone">
+						<input type="text" class="form-control" value="${Checkout.phone}" placeholder="(+84)" name="phone">
 					</div>
 					<div class="mb-3">
 						<label for="address">Address</label>
-						<input type="text" class="form-control" id="address" value="${Receipt.receiptAddress}" placeholder="1234 Main St" name="address" required>
+						<input type="text" class="form-control" id="address" value="${Checkout.address}" placeholder="1234 Main St" name="address" required>
 						<div class="invalid-feedback">Please enter your shipping address.</div>
 					</div>
 					<hr class="mb-4">
 					<h4 class="mb-3">Payment</h4>
 					<div class="d-block my-3">
 						<div class="custom-control custom-radio">
-							<input id="tienmat" name="paymentMethod" type="radio" class="custom-control-input" checked required>
+							<input id="tienmat" name="paymentMethod" type="radio" class="custom-control-input" value="cash" checked required>
 							<label class="custom-control-label" for="tienmat">Thanh toán khi nhận hàng</label>
 						</div>
 						<div class="custom-control custom-radio">
-							<input id="credit" name="paymentMethod" type="radio" class="custom-control-input" required>
+							<input id="credit" name="paymentMethod" type="radio" class="custom-control-input" value="credit_card" required>
 							<label class="custom-control-label" for="credit">Credit card</label>
 						</div>
 						<div class="custom-control custom-radio">
-							<input id="nganhang" name="paymentMethod" type="radio" class="custom-control-input" required>
+							<input id="nganhang" name="paymentMethod" type="radio" class="custom-control-input" value="bank_app" required>
 							<label class="custom-control-label" for="nganhang">Ứng dụng ngân hàng</label>
 						</div>
 						<div class="custom-control custom-radio">
-							<input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" required>
+							<input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" value="paypal" required>
 							<label class="custom-control-label" for="paypal">PayPal</label>
 						</div>
 					</div>

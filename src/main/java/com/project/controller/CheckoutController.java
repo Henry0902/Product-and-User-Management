@@ -21,6 +21,7 @@ import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -28,11 +29,16 @@ import java.util.Map;
 public class CheckoutController extends BaseController{
     @Autowired
     private ProductInfoDtoReponsitory productInfoDtoRepository;
+
+    @Autowired
+    private UserInfoRepository userInfoRepository;
+
+    @Autowired
+    private CheckoutRepository checkoutRepository;
+
     @Autowired
     private CartRepository cartRepository;
 
-    @Autowired
-    private ReceiptRepository receiptRepository;
 
     @Autowired
     private CartItemRepository cartItemRepository;
@@ -40,12 +46,11 @@ public class CheckoutController extends BaseController{
     private ObjectMapper objectMapper = new ObjectMapper();
 
 
-    @GetMapping(value = "/checkout/{userId}")
+    @GetMapping(value = "/checkout")
     public String getCheckout(Model model, HttpServletRequest req,
-                          @PathVariable Long userId,
                           @RequestParam Map<String, String> allParams) {
         handlingGet(allParams, model, req);
-        Cart cart = cartRepository.findByUserInfoId(userId);
+        Cart cart = cartRepository.findByUserInfoId(Long.valueOf(allParams.get("userId")));
         if (cart != null) {
             model.addAttribute("cartItems", cart.getItems());
             model.addAttribute("totalPrice", cart.getTotalPrice());
@@ -54,6 +59,8 @@ public class CheckoutController extends BaseController{
             model.addAttribute("totalPrice", 0);
         }
         forwartParams(allParams, model);
+        model.addAttribute("cartId", cart.getId());
+        model.addAttribute("userId", cart.getUserInfo().getId());
         return "cart/checkout";
     }
 
@@ -85,44 +92,40 @@ public class CheckoutController extends BaseController{
     @PostMapping(value = "/checkout")
     public String checkout(Model model, HttpServletRequest req, RedirectAttributes redirectAttributes,
                            @RequestParam Map<String, String> allParams,
-                           @ModelAttribute("receipt") Receipt receipt, HttpSession session) {
+                           @ModelAttribute("checkout") Checkout checkout) {
         try {
-            // Retrieve cart items from session
-            HashMap<Long, CartItem> cartItems = (HashMap<Long, CartItem>) session.getAttribute("cartItems");
-            if (cartItems == null) {
-                cartItems = new HashMap<>();
-            }
-
             // Set receipt details
-            receipt.setReceiptFirstName(req.getParameter("firstName"));
-            receipt.setReceiptLastName(req.getParameter("lastName"));
-            receipt.setReceiptAddress(req.getParameter("address"));
-            receipt.setReceiptPhone(req.getParameter("phone"));
-            receipt.setReceiptDate(new Timestamp(new Date().getTime()));
-            receipt.setReceiptStatus(true);
-            receiptRepository.save(receipt);
+            checkout.setFirstName(req.getParameter("firstName"));
+            checkout.setLastName(req.getParameter("lastName"));
+            checkout.setAddress(req.getParameter("address"));
+            checkout.setPhone(req.getParameter("phone"));
+            checkout.setDate(new Timestamp(new Date().getTime()));
+            checkout.setStatus("Pending");
+            checkout.setUserInfo(userInfoRepository.findById(Long.valueOf(allParams.get("userId"))).orElseThrow(() -> new ResourceNotFoundException("User not found")));
+            checkout.setCart(cartRepository.findById(Long.valueOf(allParams.get("cartId"))).orElseThrow(() -> new ResourceNotFoundException("Cart not found")));
+            checkoutRepository.save(checkout);
 
-            // Update each CartItem to associate it with the receipt and save it
-            for (Map.Entry<Long, CartItem> entry : cartItems.entrySet()) {
-                CartItem cartItem = entry.getValue();
-                cartItem.setReceipt(receipt);
+            List<CartItem> cartItems = cartItemRepository.findByCartId(Long.valueOf(allParams.get("cartId")));
+            for (CartItem cartItem : cartItems) {
+                cartItem.setCheckout(checkout);
                 cartItemRepository.save(cartItem);
+                cartItemRepository.deleteById(cartItem.getId());
+
             }
 
-            // Clear the cart in the session after successful processing
-            cartItems.clear();
-            session.setAttribute("cartItems", cartItems);
-            session.setAttribute("totalPrice", 0);
+            Cart cart = cartRepository.findById(Long.valueOf(allParams.get("cartId"))).orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
+            cart.setTotalPrice(0);
+            cartRepository.save(cart);
 
             // Add success message
             redirectAttributes.addFlashAttribute("successMessage", "Checkout successful!");
 
-            return "redirect:/invoice/"; // or wherever you want to redirect after successful checkout
+            return "redirect:/list-order"; // or wherever you want to redirect after successful checkout
         } catch (Exception e) {
             // Handle any exceptions here
             redirectAttributes.addFlashAttribute("errorMessage", "An error occurred during checkout.");
 
-            return "redirect:/checkout/{userId}"; // or wherever you want to redirect in case of error
+            return "redirect:/checkout?userId=" + allParams.get("userId"); // or wherever you want to redirect in case of error
         }
     }
 
