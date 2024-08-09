@@ -7,3 +7,6 @@
 # tài khoản user chỉ có thể xem sản phẩm và thêm vào giỏ hàng
 # tên đăng nhập : user
 # mật khẩu : 12345678
+#------------------------------------------
+# hãy import sql để trải nghiệm toàn bộ project
+# have a great day
