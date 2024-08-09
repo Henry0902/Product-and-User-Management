@@ -66,7 +66,7 @@
 											<th>Email</th>
 											<th>Address</th>
 											<th>Phone</th>
-											<th style="width: 180px;">Trạng thái</th>
+											<th style="width: 180px;">Trạng thái</th>f
 											<th style="width: 100px;"></th>
 										</tr>
 									</thead>

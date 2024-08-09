@@ -16,6 +16,7 @@ public class OrderSearch {
     private String s_firstname;
     private String s_lastname;
     private String s_phone;
+
     private String s_unit;
     private String s_status;
 
@@ -29,6 +30,8 @@ public class OrderSearch {
         if(StringUtils.isEmpty(this.s_phone)){
             this.s_phone = null;
         }
+
+
         if(StringUtils.isEmpty(this.s_unit)){
             this.s_unit = null;
         }

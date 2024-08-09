@@ -62,7 +62,12 @@ public class DangNhapController extends BaseController {
             req.getSession().setAttribute("email", userInfo.getEmail());
             req.getSession().setAttribute("userId", userInfo.getId());
 
-            return "redirect:/";
+            String username = userInfo.getUsername().toLowerCase();
+            if ("admin".equals(username) || "supper_admin".equals(username)) {
+                return "redirect:/";
+            } else {
+                return "redirect:/home-shopping";
+            }
         } catch (ErrorException e) {
 			model.addAttribute("message", e.getMessage());
 			LOGGER.error(e.getMessage());

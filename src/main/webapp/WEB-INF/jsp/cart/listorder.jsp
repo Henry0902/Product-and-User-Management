@@ -6,7 +6,7 @@
 		<div class="container-fluid">
 			<div class="row mb-2">
 				<div class="col-sm-6">
-					<h1>Danh sách người dùng</h1>
+					<h1>Danh sách Order</h1>
 				</div>
 				<div class="col-sm-6">
 					<ol class="breadcrumb float-sm-right">
@@ -79,7 +79,11 @@
 											<td>${item.phone }</td>
 											<td>${item.paymentMethod}</td>
 											<td>${item.status}</td>
-
+											<td class="text-center">
+												<a href="javascript:void(0)" onclick="deleteRC('${contextPath}/list-order/xoa?id=${item.id}')" class="text-danger" style="margin-left: 5px;">
+													<i class="fa fa-trash"></i>
+												</a>
+											</td>
 										</tr>
 									</c:forEach>
 									</tbody>

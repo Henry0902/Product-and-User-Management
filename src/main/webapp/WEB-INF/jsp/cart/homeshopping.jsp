@@ -35,13 +35,20 @@
                     </ul>
                 </li>
             </ul>
-            <form action="${pageContext.request.contextPath}/cart?userId=${userId}" method="post" class="d-flex">
+            <form action="${pageContext.request.contextPath}/cart?userId=${userId}" method="post" class="d-flex me-3">
                 <button class="btn btn-outline-dark" type="submit">
                     <i class="bi-cart-fill me-1" ></i>
                     Cart
                     <span class="badge bg-dark text-white ms-1 rounded-pill">${cartItems.size()}</span>
                 </button>
             </form>
+
+            <form action="/logout" method="get" class="d-flex">
+                <button class="btn btn-outline-dark" type="submit">
+                    Đăng xuất
+                </button>
+            </form>
+
         </div>
     </div>
 </nav>

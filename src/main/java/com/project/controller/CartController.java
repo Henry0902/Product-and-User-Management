@@ -22,14 +22,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 
-public class CartController extends BaseController{
+public class CartController extends BaseController {
 
     @Autowired
     private UserInfoRepository userInfoRepository;
@@ -106,7 +103,8 @@ public class CartController extends BaseController{
 
     @PostMapping("/cart/add-to-cart")
     public String addToCart(@RequestParam Map<String, String> allParams,
-                            @RequestParam int quantity, HttpSession session) {
+                            @RequestParam int quantity,
+                            RedirectAttributes redirectAttributes, HttpServletRequest req) {
 
         Cart cart = cartRepository.findByUserInfoId(Long.valueOf(allParams.get("userId")));
         if (cart == null) {
@@ -135,8 +133,9 @@ public class CartController extends BaseController{
 
         recalculateTotalPrice(cart);
         cartRepository.save(cart);
+        redirectAttributes.addFlashAttribute("success", "Thêm vào giỏ hàng thành công");
 
-        return "redirect:/cart?userId=" + allParams.get("userId");
+        return "redirect:/home-shopping";
     }
 
     private void recalculateTotalPrice(Cart cart) {
@@ -146,33 +145,8 @@ public class CartController extends BaseController{
         cart.setTotalPrice(total);
     }
 
-@RequestMapping(value = "/cart/xoa", method = {RequestMethod.GET})
-public String delete(Model model,
-                     @RequestParam Map<String, String> allParams,
-                     RedirectAttributes redirectAttributes, HttpServletRequest req) {
-
-
-    if (!StringUtils.isEmpty(allParams.get("id"))) {
-        CartItem checkNd = cartItemRepository
-                .findById(Long.valueOf(allParams.get("id"))).get();
-        if (checkNd != null) {
-            cartItemRepository.delete(checkNd);
-            Long userId = checkNd.getCart().getUserInfo().getId(); // Lấy userId từ CartItem
-            Optional<Cart> cart = cartRepository.findById(checkNd.getCart().getId());
-
-
-            cart.get().setTotalPrice(cart.get().getTotalPrice() - checkNd.getPrice() * checkNd.getQuantity());
-
-            cartRepository.save(cart.get());
-            redirectAttributes.addFlashAttribute("success", "Xóa thành công");
-            return "redirect:/cart/" + userId; // Chuyển hướng về trang giỏ hàng của người dùng
-        }
-    }
-    redirectAttributes.addFlashAttribute("error", "Xóa thất bại");
-    return "redirect:/cart?" + queryStringBuilder(allParams);
-}
-    @RequestMapping(value = "/cart/update-so-luong", method = {RequestMethod.GET})
-    public String updateSoLuong(Model model,
+    @RequestMapping(value = "/cart/xoa", method = {RequestMethod.GET})
+    public String delete(Model model,
                          @RequestParam Map<String, String> allParams,
                          RedirectAttributes redirectAttributes, HttpServletRequest req) {
 
@@ -180,26 +154,17 @@ public String delete(Model model,
         if (!StringUtils.isEmpty(allParams.get("id"))) {
             CartItem checkNd = cartItemRepository
                     .findById(Long.valueOf(allParams.get("id"))).get();
-
             if (checkNd != null) {
-                String dau = allParams.get("dau");
-                if (dau.equals("cong")) {
-                    checkNd.setQuantity(checkNd.getQuantity() + 1);
-                    cartItemRepository.save(checkNd);
-                    Optional<Cart> cart = cartRepository.findById(checkNd.getCart().getId());
-                    cart.get().setTotalPrice(cart.get().getTotalPrice() + checkNd.getPrice());
-                    cartRepository.save(cart.get());
-                } else {
-                    checkNd.setQuantity(checkNd.getQuantity() - 1);
-                    cartItemRepository.save(checkNd);
-                    Optional<Cart> cart = cartRepository.findById(checkNd.getCart().getId());
-                    cart.get().setTotalPrice(cart.get().getTotalPrice() - checkNd.getPrice());
-                    cartRepository.save(cart.get());
-                }
+                cartItemRepository.delete(checkNd);
                 Long userId = checkNd.getCart().getUserInfo().getId(); // Lấy userId từ CartItem
+                Optional<Cart> cart = cartRepository.findById(checkNd.getCart().getId());
 
-                redirectAttributes.addFlashAttribute("success", "Tăng số lượng thành công");
-                return "redirect:/cart/" + userId; // Chuyển hướng về trang giỏ hàng của người dùng
+
+                cart.get().setTotalPrice(cart.get().getTotalPrice() - checkNd.getPrice() * checkNd.getQuantity());
+
+                cartRepository.save(cart.get());
+                redirectAttributes.addFlashAttribute("success", "Xóa thành công");
+                return "redirect:/cart?userId=" + allParams.get("userId"); // Chuyển hướng về trang giỏ hàng của người dùng
             }
         }
         redirectAttributes.addFlashAttribute("error", "Xóa thất bại");
@@ -207,5 +172,51 @@ public String delete(Model model,
     }
 
 
+    @PostMapping(value = "/cart/update-quantity")
+    public String updateSoLuong(Model model,
+                                @RequestParam Map<String, String> allParams,
+                                RedirectAttributes redirectAttributes, HttpServletRequest req) {
+
+        List<Long> cartItemIds = new ArrayList<>();
+        List<Integer> quantities = new ArrayList<>();
+
+        // Giả sử rằng allParams chứa các cặp giá trị như: cartItemId-1, quantity-1, ...
+        // Do đó, chúng ta có thể trích xuất các giá trị dựa trên tên tham số
+        for (String key : allParams.keySet()) {
+            if (key.startsWith("cartItemId-")) {
+                Long cartItemId = Long.valueOf(allParams.get(key));
+                cartItemIds.add(cartItemId);
+            } else if (key.startsWith("quantity-")) {
+                Integer quantity = Integer.valueOf(allParams.get(key));
+                quantities.add(quantity);
+            }
+        }
+
+        // Kiểm tra tính hợp lệ của dữ liệu
+//        if (cartItemIds.size() != quantities.size()) {
+//            redirectAttributes.addFlashAttribute("error", "Dữ liệu không hợp lệ.");
+//            return "redirect:/cart?userId=" + allParams.get("userId");
+//        }
+
+        // Cập nhật số lượng cho từng CartItem
+        for (int i = 0; i < cartItemIds.size(); i++) {
+            Long cartItemId = cartItemIds.get(i);
+            Integer quantity = quantities.get(i);
+
+            CartItem cartItem = cartItemRepository.findById(cartItemId).orElse(null);
+            if (cartItem != null) {
+                cartItem.setQuantity(quantity);
+                cartItemRepository.save(cartItem);
+            }
+        }
+
+        // Tính toán lại tổng giá và lưu Cart
+        Cart cart = cartRepository.findByUserInfoId(Long.valueOf(allParams.get("userId")));
+        recalculateTotalPrice(cart);
+        cartRepository.save(cart);
+
+        redirectAttributes.addFlashAttribute("success", "Cập nhật số lượng thành công");
+        return "redirect:/checkout?userId=" + allParams.get("userId");
+    }
 
 }

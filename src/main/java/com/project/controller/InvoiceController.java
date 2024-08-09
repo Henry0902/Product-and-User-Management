@@ -4,27 +4,31 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.common.Paginate;
 import com.project.exception.ResourceNotFoundException;
 import com.project.model.dto.ProductInfoDto;
-import com.project.model.dto.UserInfoDto;
 import com.project.model.search.ProductSearch;
 import com.project.model.search.UserSearch;
 import com.project.repository.*;
-import com.project.table.*;
+import com.project.table.Cart;
+import com.project.table.CartItem;
+import com.project.table.Checkout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 
-public class CheckoutController extends BaseController{
+public class InvoiceController extends BaseController{
     @Autowired
     private ProductInfoDtoReponsitory productInfoDtoRepository;
 
@@ -44,8 +48,8 @@ public class CheckoutController extends BaseController{
     private ObjectMapper objectMapper = new ObjectMapper();
 
 
-    @GetMapping(value = "/checkout")
-    public String getCheckout(Model model, HttpServletRequest req,
+    @GetMapping(value = "/invoice")
+    public String getinvoice(Model model, HttpServletRequest req,
                           @RequestParam Map<String, String> allParams) {
         handlingGet(allParams, model, req);
         Cart cart = cartRepository.findByUserInfoId(Long.valueOf(allParams.get("userId")));
@@ -59,7 +63,7 @@ public class CheckoutController extends BaseController{
         forwartParams(allParams, model);
         model.addAttribute("cartId", cart.getId());
         model.addAttribute("userId", cart.getUserInfo().getId());
-        return "cart/checkout";
+        return "cart/invoice";
     }
 
     private void handlingGet(Map<String, String> allParams, Model model, HttpServletRequest req) {
@@ -88,47 +92,6 @@ public class CheckoutController extends BaseController{
     }
 
 
-
-
-    @PostMapping(value = "/checkout")
-    public String checkout(Model model, HttpServletRequest req, RedirectAttributes redirectAttributes,
-                           @RequestParam Map<String, String> allParams,
-                           @ModelAttribute("checkout") Checkout checkout) {
-        try {
-            // Set receipt details
-            checkout.setFirstName(req.getParameter("firstName"));
-            checkout.setLastName(req.getParameter("lastName"));
-            checkout.setAddress(req.getParameter("address"));
-            checkout.setPhone(req.getParameter("phone"));
-            checkout.setDate(new Timestamp(new Date().getTime()));
-            checkout.setStatus("Pending");
-            checkout.setUserInfo(userInfoRepository.findById(Long.valueOf(allParams.get("userId"))).orElseThrow(() -> new ResourceNotFoundException("User not found")));
-            checkout.setCart(cartRepository.findById(Long.valueOf(allParams.get("cartId"))).orElseThrow(() -> new ResourceNotFoundException("Cart not found")));
-            checkoutRepository.save(checkout);
-
-            List<CartItem> cartItems = cartItemRepository.findByCartId(Long.valueOf(allParams.get("cartId")));
-            for (CartItem cartItem : cartItems) {
-                cartItem.setCheckout(checkout);
-                cartItemRepository.save(cartItem);
-                cartItemRepository.deleteById(cartItem.getId());
-
-            }
-
-            Cart cart = cartRepository.findById(Long.valueOf(allParams.get("cartId"))).orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
-            cart.setTotalPrice(0);
-            cartRepository.save(cart);
-
-            // Add success message
-            redirectAttributes.addFlashAttribute("successMessage", "Checkout successful!");
-
-            return "redirect:/list-order?userId=" + allParams.get("userId"); // or wherever you want to redirect after successful checkout
-        } catch (Exception e) {
-            // Handle any exceptions here
-            redirectAttributes.addFlashAttribute("errorMessage", "An error occurred during checkout.");
-
-            return "redirect:/checkout?userId=" + allParams.get("userId"); // or wherever you want to redirect in case of error
-        }
-    }
 
 
 }
