@@ -133,9 +133,9 @@ public class CartController extends BaseController {
 
         recalculateTotalPrice(cart);
         cartRepository.save(cart);
-        redirectAttributes.addFlashAttribute("success", "Thêm vào giỏ hàng thành công");
+        redirectAttributes.addFlashAttribute("message", "Thêm vào giỏ hàng thành công");
 
-        return "redirect:/home-shopping";
+        return "redirect:/home-shopping?" + queryStringBuilder(allParams);
     }
 
     private void recalculateTotalPrice(Cart cart) {

@@ -27,9 +27,6 @@ public class Cart implements Serializable {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserInfo userInfo;
 
-    @OneToOne(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Checkout checkout; // Thêm ánh xạ @OneToOne tới Checkout
-
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<CartItem> items = new ArrayList<>();
 

@@ -24,15 +24,12 @@ DROP TABLE IF EXISTS `cart`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cart` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `user_info_id` bigint DEFAULT NULL,
-  `user_id` bigint DEFAULT NULL,
   `total_price` double NOT NULL,
+  `user_id` bigint DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `FK7s1e5mfo1p7ixxi3dflwn75rg` (`user_info_id`),
   KEY `FK3oexs31qtfpym0v38fc3o951i` (`user_id`),
-  CONSTRAINT `FK3oexs31qtfpym0v38fc3o951i` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`id`),
-  CONSTRAINT `FK7s1e5mfo1p7ixxi3dflwn75rg` FOREIGN KEY (`user_info_id`) REFERENCES `user_info` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `FK3oexs31qtfpym0v38fc3o951i` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +38,7 @@ CREATE TABLE `cart` (
 
 LOCK TABLES `cart` WRITE;
 /*!40000 ALTER TABLE `cart` DISABLE KEYS */;
-INSERT INTO `cart` VALUES (10,NULL,1,274),(11,NULL,9,144);
+INSERT INTO `cart` VALUES (1,87,1),(2,0,2);
 /*!40000 ALTER TABLE `cart` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -54,25 +51,19 @@ DROP TABLE IF EXISTS `cart_item`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cart_item` (
   `id` bigint NOT NULL AUTO_INCREMENT,
+  `price` float DEFAULT NULL,
   `quantity` int NOT NULL,
   `cart_id` bigint DEFAULT NULL,
-  `product_info_id` bigint DEFAULT NULL,
-  `product_id` bigint NOT NULL,
-  `price` float DEFAULT NULL,
-  `receipt_id` bigint DEFAULT NULL,
-  `cart_item_id` bigint DEFAULT NULL,
+  `checkout_id` bigint DEFAULT NULL,
+  `product_id` bigint DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK1uobyhgl1wvgt1jpccia8xxs3` (`cart_id`),
-  KEY `FK1ohnp2xpjyntaiqmqxe2lyxxj` (`product_info_id`),
+  KEY `FKf1ybjf84289qeja48317ro13p` (`checkout_id`),
   KEY `FKtbm3puh4cpldywrpuisljh6x` (`product_id`),
-  KEY `FKi35gmu6b09121aygv9scxgb6p` (`receipt_id`),
-  KEY `FKtb6rxa5qxpj7856jyrdyy3j1m` (`cart_item_id`),
-  CONSTRAINT `FK1ohnp2xpjyntaiqmqxe2lyxxj` FOREIGN KEY (`product_info_id`) REFERENCES `product_info` (`id`),
   CONSTRAINT `FK1uobyhgl1wvgt1jpccia8xxs3` FOREIGN KEY (`cart_id`) REFERENCES `cart` (`id`),
-  CONSTRAINT `FKi35gmu6b09121aygv9scxgb6p` FOREIGN KEY (`receipt_id`) REFERENCES `receipt` (`receipt_id`),
-  CONSTRAINT `FKtb6rxa5qxpj7856jyrdyy3j1m` FOREIGN KEY (`cart_item_id`) REFERENCES `receipt` (`receipt_id`),
+  CONSTRAINT `FKf1ybjf84289qeja48317ro13p` FOREIGN KEY (`checkout_id`) REFERENCES `checkout` (`id`),
   CONSTRAINT `FKtbm3puh4cpldywrpuisljh6x` FOREIGN KEY (`product_id`) REFERENCES `product_info` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -81,7 +72,7 @@ CREATE TABLE `cart_item` (
 
 LOCK TABLES `cart_item` WRITE;
 /*!40000 ALTER TABLE `cart_item` DISABLE KEYS */;
-INSERT INTO `cart_item` VALUES (59,1,10,NULL,32,54,NULL,NULL),(60,1,10,NULL,31,120,NULL,NULL),(61,1,10,NULL,30,100,NULL,NULL),(62,1,11,NULL,30,100,NULL,NULL),(63,1,11,NULL,29,44,NULL,NULL);
+INSERT INTO `cart_item` VALUES (56,87,1,1,NULL,26);
 /*!40000 ALTER TABLE `cart_item` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -94,12 +85,21 @@ DROP TABLE IF EXISTS `checkout`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `checkout` (
   `id` bigint NOT NULL AUTO_INCREMENT,
+  `address` varchar(255) DEFAULT NULL,
+  `date` datetime(6) DEFAULT NULL,
+  `first_name` varchar(255) DEFAULT NULL,
+  `last_name` varchar(255) DEFAULT NULL,
   `payment_method` varchar(255) DEFAULT NULL,
+  `phone` varchar(255) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
   `cart_id` bigint DEFAULT NULL,
+  `user_id` bigint DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKs4p1r23jcw3r43psmma1enoe8` (`cart_id`),
+  KEY `FK1o8bwiwtryuyg4skf0jhsiioo` (`user_id`),
+  CONSTRAINT `FK1o8bwiwtryuyg4skf0jhsiioo` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`id`),
   CONSTRAINT `FKs4p1r23jcw3r43psmma1enoe8` FOREIGN KEY (`cart_id`) REFERENCES `cart` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -108,6 +108,7 @@ CREATE TABLE `checkout` (
 
 LOCK TABLES `checkout` WRITE;
 /*!40000 ALTER TABLE `checkout` DISABLE KEYS */;
+INSERT INTO `checkout` VALUES (23,'H√† N·ªôi','2024-08-09 09:00:13.806000','Thai','Nguyen Vi·ªát','cash','0375549373','Pending',2,2),(24,'TP HCM','2024-08-09 09:47:11.933000','kiet','Nguyen Vi·ªát','paypal','0375549373','Pending',2,2),(25,'h√† n·ªôi','2024-08-09 09:48:51.821000','Quy·ªÅn','Cao VƒÉn ','credit_card','0375549373','Pending',2,2);
 /*!40000 ALTER TABLE `checkout` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -131,6 +132,37 @@ LOCK TABLES `hibernate_sequence` WRITE;
 /*!40000 ALTER TABLE `hibernate_sequence` DISABLE KEYS */;
 INSERT INTO `hibernate_sequence` VALUES (10);
 /*!40000 ALTER TABLE `hibernate_sequence` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `order_dto`
+--
+
+DROP TABLE IF EXISTS `order_dto`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `order_dto` (
+  `id` bigint NOT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `date` datetime(6) DEFAULT NULL,
+  `first_name` varchar(255) DEFAULT NULL,
+  `last_name` varchar(255) DEFAULT NULL,
+  `payment_method` varchar(255) DEFAULT NULL,
+  `phone` varchar(255) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  `cart_id` bigint DEFAULT NULL,
+  `total_price` double NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `order_dto`
+--
+
+LOCK TABLES `order_dto` WRITE;
+/*!40000 ALTER TABLE `order_dto` DISABLE KEYS */;
+/*!40000 ALTER TABLE `order_dto` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -261,37 +293,6 @@ LOCK TABLES `product_module` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `receipt`
---
-
-DROP TABLE IF EXISTS `receipt`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `receipt` (
-  `receipt_id` bigint NOT NULL,
-  `receipt_address` varchar(255) DEFAULT NULL,
-  `receipt_date` datetime(6) DEFAULT NULL,
-  `receipt_first_name` varchar(255) DEFAULT NULL,
-  `receipt_last_name` varchar(255) DEFAULT NULL,
-  `receipt_phone` varchar(255) DEFAULT NULL,
-  `receipt_status` bit(1) NOT NULL,
-  `user_id` bigint DEFAULT NULL,
-  PRIMARY KEY (`receipt_id`),
-  KEY `FKnsitn2khc8yqsk8pvhfocl3wv` (`user_id`),
-  CONSTRAINT `FKnsitn2khc8yqsk8pvhfocl3wv` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `receipt`
---
-
-LOCK TABLES `receipt` WRITE;
-/*!40000 ALTER TABLE `receipt` DISABLE KEYS */;
-/*!40000 ALTER TABLE `receipt` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `spring_session`
 --
 
@@ -319,7 +320,7 @@ CREATE TABLE `spring_session` (
 
 LOCK TABLES `spring_session` WRITE;
 /*!40000 ALTER TABLE `spring_session` DISABLE KEYS */;
-INSERT INTO `spring_session` VALUES ('69aa4ba5-b27a-48a8-9345-d34dd23d0bae','803e096e-bdc0-48c5-bafa-7eaeca1f4b39',1722827656133,1722840413013,90000,1722930413013,NULL);
+INSERT INTO `spring_session` VALUES ('1f545adf-8709-45ff-b947-d43a6cbc9687','0a6b57a3-5607-4bbf-9472-03a33ebd3643',1723101901729,1723120526289,90000,1723210526289,NULL),('a36793df-5353-4394-a93e-22bb72cdaab9','26403344-2d50-46d6-9095-0683634c31b5',1723186759166,1723197061849,90000,1723287061849,NULL),('b69d219e-327f-4d2f-a82b-78b14d81bb52','0c72af1d-7d59-49c9-abb1-c8827e09fe7d',1723170360458,1723176238358,90000,1723266238358,NULL);
 /*!40000 ALTER TABLE `spring_session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -345,7 +346,7 @@ CREATE TABLE `spring_session_attributes` (
 
 LOCK TABLES `spring_session_attributes` WRITE;
 /*!40000 ALTER TABLE `spring_session_attributes` DISABLE KEYS */;
-INSERT INTO `spring_session_attributes` VALUES ('69aa4ba5-b27a-48a8-9345-d34dd23d0bae','cartItems',_binary '¨\Ì\0sr\0java.util.HashMap\⁄¡\√`\—\0F\0\nloadFactorI\0	thresholdxp?@\0\0\0\0\0\0w\0\0\0\0\0\0\0x'),('69aa4ba5-b27a-48a8-9345-d34dd23d0bae','fullName',_binary '¨\Ì\0t\0supper_admin'),('69aa4ba5-b27a-48a8-9345-d34dd23d0bae','totalPrice',_binary '¨\Ì\0sr\0java.lang.Integer‚†§˜Åá8\0I\0valuexr\0java.lang.NumberÜ¨ïî\‡ã\0\0xp\0\0\0\0'),('69aa4ba5-b27a-48a8-9345-d34dd23d0bae','userId',_binary '¨\Ì\0sr\0java.lang.Long;ã\‰êÃè#\ﬂ\0J\0valuexr\0java.lang.NumberÜ¨ïî\‡ã\0\0xp\0\0\0\0\0\0\0'),('69aa4ba5-b27a-48a8-9345-d34dd23d0bae','userModuleMenus',_binary '¨\Ì\0sr\0java.util.ArrayListxÅ\“ô\«aù\0I\0sizexp\0\0\0w\0\0\0sr\0com.project.table.UserModuleπ]T¥∞}Ñ\0\0J\0placeL\0icont\0Ljava/lang/String;L\0idt\0Ljava/lang/Long;L\0nameq\0~\0L\0parentIdq\0~\0L\0statust\0Ljava/lang/Integer;L\0urlq\0~\0xp\0\0\0\0\0\0\0t\0nav-icon fas fa-tachometer-altsr\0java.lang.Long;ã\‰êÃè#\ﬂ\0J\0valuexr\0java.lang.NumberÜ¨ïî\‡ã\0\0xp\0\0\0\0\0\0\0t\0Qu·∫£n tr·ªãsq\0~\0\0\0\0\0\0\0\0\0sr\0java.lang.Integer‚†§˜Åá8\0I\0valuexq\0~\0	\0\0\0t\0\0sq\0~\0\0\0\0\0\0\0\0t\0nav-icon fas fa-tachometer-altsq\0~\0\0\0\0\0\0\0\0t\0Qu·∫£n l√Ω s·∫£n ph·∫©mq\0~\0q\0~\0t\0\0sq\0~\0\0\0\0\0\0\0\0t\0nav-icon fas fa-tachometer-altsq\0~\0\0\0\0\0\0\0\0t\0Qu·∫£n l√Ω gi·ªè h√†ngq\0~\0q\0~\0psq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0t\0Ng∆∞·ªùi d√πngq\0~\0\nq\0~\0t\0/nguoi-dungsq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0t\0S·∫£n ph·∫©mq\0~\0q\0~\0t\0	/san-phamsq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0t\0Nh√≥m ng∆∞·ªùi d√πngq\0~\0\nq\0~\0t\0/nhom-nguoi-dungsq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0t\0Nh√≥m s·∫£n ph·∫©mq\0~\0q\0~\0t\0/nhom-san-phamsq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0\nt\0\rHome Shoppingq\0~\0sq\0~\0\r\0\0\0t\0/home-shoppingx'),('69aa4ba5-b27a-48a8-9345-d34dd23d0bae','username',_binary '¨\Ì\0t\0supper_admin');
+INSERT INTO `spring_session_attributes` VALUES ('1f545adf-8709-45ff-b947-d43a6cbc9687','fullName',_binary '¨\Ì\0t\0supper_admin'),('1f545adf-8709-45ff-b947-d43a6cbc9687','userId',_binary '¨\Ì\0sr\0java.lang.Long;ã\‰êÃè#\ﬂ\0J\0valuexr\0java.lang.NumberÜ¨ïî\‡ã\0\0xp\0\0\0\0\0\0\0'),('1f545adf-8709-45ff-b947-d43a6cbc9687','userModuleMenus',_binary '¨\Ì\0sr\0java.util.ArrayListxÅ\“ô\«aù\0I\0sizexp\0\0\0	w\0\0\0	sr\0com.project.table.UserModuleπ]T¥∞}Ñ\0\0J\0placeL\0icont\0Ljava/lang/String;L\0idt\0Ljava/lang/Long;L\0nameq\0~\0L\0parentIdq\0~\0L\0statust\0Ljava/lang/Integer;L\0urlq\0~\0xp\0\0\0\0\0\0\0t\0nav-icon fas fa-tachometer-altsr\0java.lang.Long;ã\‰êÃè#\ﬂ\0J\0valuexr\0java.lang.NumberÜ¨ïî\‡ã\0\0xp\0\0\0\0\0\0\0t\0Qu·∫£n tr·ªãsq\0~\0\0\0\0\0\0\0\0\0sr\0java.lang.Integer‚†§˜Åá8\0I\0valuexq\0~\0	\0\0\0t\0\0sq\0~\0\0\0\0\0\0\0\0t\0nav-icon fas fa-tachometer-altsq\0~\0\0\0\0\0\0\0\0t\0Qu·∫£n l√Ω s·∫£n ph·∫©mq\0~\0q\0~\0t\0\0sq\0~\0\0\0\0\0\0\0\0t\0nav-icon fas fa-tachometer-altsq\0~\0\0\0\0\0\0\0\0t\0Qu·∫£n l√Ω gi·ªè h√†ngq\0~\0q\0~\0psq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0t\0Ng∆∞·ªùi d√πngq\0~\0\nq\0~\0t\0/nguoi-dungsq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0t\0S·∫£n ph·∫©mq\0~\0q\0~\0t\0	/san-phamsq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0t\0\rHome Shoppingq\0~\0sq\0~\0\r\0\0\0t\0/home-shoppingsq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0t\0Nh√≥m ng∆∞·ªùi d√πngq\0~\0\nq\0~\0t\0/nhom-nguoi-dungsq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0t\0Nh√≥m s·∫£n ph·∫©mq\0~\0q\0~\0t\0/nhom-san-phamsq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0	t\0	List Oderq\0~\0q\0~\0$t\0/list-orderx'),('1f545adf-8709-45ff-b947-d43a6cbc9687','username',_binary '¨\Ì\0t\0supper_admin'),('a36793df-5353-4394-a93e-22bb72cdaab9','fullName',_binary '¨\Ì\0t\0supper_admin'),('a36793df-5353-4394-a93e-22bb72cdaab9','userId',_binary '¨\Ì\0sr\0java.lang.Long;ã\‰êÃè#\ﬂ\0J\0valuexr\0java.lang.NumberÜ¨ïî\‡ã\0\0xp\0\0\0\0\0\0\0'),('a36793df-5353-4394-a93e-22bb72cdaab9','userModuleMenus',_binary '¨\Ì\0sr\0java.util.ArrayListxÅ\“ô\«aù\0I\0sizexp\0\0\0\nw\0\0\0\nsr\0com.project.table.UserModuleπ]T¥∞}Ñ\0\0J\0placeL\0icont\0Ljava/lang/String;L\0idt\0Ljava/lang/Long;L\0nameq\0~\0L\0parentIdq\0~\0L\0statust\0Ljava/lang/Integer;L\0urlq\0~\0xp\0\0\0\0\0\0\0t\0nav-icon fas fa-tachometer-altsr\0java.lang.Long;ã\‰êÃè#\ﬂ\0J\0valuexr\0java.lang.NumberÜ¨ïî\‡ã\0\0xp\0\0\0\0\0\0\0t\0Qu·∫£n tr·ªãsq\0~\0\0\0\0\0\0\0\0\0sr\0java.lang.Integer‚†§˜Åá8\0I\0valuexq\0~\0	\0\0\0t\0\0sq\0~\0\0\0\0\0\0\0\0t\0nav-icon fas fa-tachometer-altsq\0~\0\0\0\0\0\0\0\0t\0Qu·∫£n l√Ω s·∫£n ph·∫©mq\0~\0q\0~\0t\0\0sq\0~\0\0\0\0\0\0\0\0t\0nav-icon fas fa-tachometer-altsq\0~\0\0\0\0\0\0\0\0t\0Qu·∫£n l√Ω gi·ªè h√†ngq\0~\0q\0~\0psq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0t\0Ng∆∞·ªùi d√πngq\0~\0\nq\0~\0t\0/nguoi-dungsq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0t\0S·∫£n ph·∫©mq\0~\0q\0~\0t\0	/san-phamsq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0t\0\rHome Shoppingq\0~\0q\0~\0t\0/home-shoppingsq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0t\0Nh√≥m ng∆∞·ªùi d√πngq\0~\0\nq\0~\0t\0/nhom-nguoi-dungsq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0t\0Nh√≥m s·∫£n ph·∫©mq\0~\0q\0~\0t\0/nhom-san-phamsq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0	t\0	List Oderq\0~\0q\0~\0t\0/list-ordersq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0\nt\0Checkoutq\0~\0q\0~\0t\0	/checkoutx'),('a36793df-5353-4394-a93e-22bb72cdaab9','username',_binary '¨\Ì\0t\0supper_admin'),('b69d219e-327f-4d2f-a82b-78b14d81bb52','fullName',_binary '¨\Ì\0t\0supper_admin'),('b69d219e-327f-4d2f-a82b-78b14d81bb52','userId',_binary '¨\Ì\0sr\0java.lang.Long;ã\‰êÃè#\ﬂ\0J\0valuexr\0java.lang.NumberÜ¨ïî\‡ã\0\0xp\0\0\0\0\0\0\0'),('b69d219e-327f-4d2f-a82b-78b14d81bb52','userModuleMenus',_binary '¨\Ì\0sr\0java.util.ArrayListxÅ\“ô\«aù\0I\0sizexp\0\0\0\nw\0\0\0\nsr\0com.project.table.UserModuleπ]T¥∞}Ñ\0\0J\0placeL\0icont\0Ljava/lang/String;L\0idt\0Ljava/lang/Long;L\0nameq\0~\0L\0parentIdq\0~\0L\0statust\0Ljava/lang/Integer;L\0urlq\0~\0xp\0\0\0\0\0\0\0t\0nav-icon fas fa-tachometer-altsr\0java.lang.Long;ã\‰êÃè#\ﬂ\0J\0valuexr\0java.lang.NumberÜ¨ïî\‡ã\0\0xp\0\0\0\0\0\0\0t\0Qu·∫£n tr·ªãsq\0~\0\0\0\0\0\0\0\0\0sr\0java.lang.Integer‚†§˜Åá8\0I\0valuexq\0~\0	\0\0\0t\0\0sq\0~\0\0\0\0\0\0\0\0t\0nav-icon fas fa-tachometer-altsq\0~\0\0\0\0\0\0\0\0t\0Qu·∫£n l√Ω s·∫£n ph·∫©mq\0~\0q\0~\0t\0\0sq\0~\0\0\0\0\0\0\0\0t\0nav-icon fas fa-tachometer-altsq\0~\0\0\0\0\0\0\0\0t\0Qu·∫£n l√Ω gi·ªè h√†ngq\0~\0q\0~\0psq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0t\0Ng∆∞·ªùi d√πngq\0~\0\nq\0~\0t\0/nguoi-dungsq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0t\0S·∫£n ph·∫©mq\0~\0q\0~\0t\0	/san-phamsq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0t\0\rHome Shoppingq\0~\0q\0~\0t\0/home-shoppingsq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0t\0Nh√≥m ng∆∞·ªùi d√πngq\0~\0\nq\0~\0t\0/nhom-nguoi-dungsq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0t\0Nh√≥m s·∫£n ph·∫©mq\0~\0q\0~\0t\0/nhom-san-phamsq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0	t\0	List Oderq\0~\0q\0~\0t\0/list-ordersq\0~\0\0\0\0\0\0\0\0psq\0~\0\0\0\0\0\0\0\0\nt\0Checkoutq\0~\0q\0~\0t\0	/checkoutx'),('b69d219e-327f-4d2f-a82b-78b14d81bb52','username',_binary '¨\Ì\0t\0supper_admin');
 /*!40000 ALTER TABLE `spring_session_attributes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -389,7 +390,7 @@ CREATE TABLE `user_group_permission` (
   `group_id` bigint NOT NULL,
   `module_id` bigint NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -398,7 +399,7 @@ CREATE TABLE `user_group_permission` (
 
 LOCK TABLES `user_group_permission` WRITE;
 /*!40000 ALTER TABLE `user_group_permission` DISABLE KEYS */;
-INSERT INTO `user_group_permission` VALUES (1,1,2),(2,1,3),(3,1,5),(4,1,6),(5,1,8),(6,1,9),(7,1,10),(8,10,10);
+INSERT INTO `user_group_permission` VALUES (1,1,2),(2,1,3),(3,1,5),(4,1,6),(5,1,8),(6,1,9),(7,2,8),(8,1,10);
 /*!40000 ALTER TABLE `user_group_permission` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -422,7 +423,7 @@ CREATE TABLE `user_info` (
   `address` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   `phone` varchar(11) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -431,7 +432,7 @@ CREATE TABLE `user_info` (
 
 LOCK TABLES `user_info` WRITE;
 /*!40000 ALTER TABLE `user_info` DISABLE KEYS */;
-INSERT INTO `user_info` VALUES (1,NULL,'2024-08-05 05:00:08',NULL,'supper_admin',1,'a02b3395d3b5297ed2bf339be5b915',1,'supper_admin','H√† N·ªôi','0123456789'),(9,'supper_admin','2024-08-05 05:30:04','caovanquyena11@gmail.com','Cao Van Quyen',10,'25d55ad283aa40af464c76d713c7ad',1,'user','mao dien thuan thanh bac ninh trai dat giai ngan ha','0375549373');
+INSERT INTO `user_info` VALUES (1,NULL,'2024-08-05 05:00:08',NULL,'supper_admin',1,'a02b3395d3b5297ed2bf339be5b915',1,'supper_admin','H√† N·ªôi','0123456789'),(2,'supper_admin','2024-08-05 05:30:04','caovanquyena11@gmail.com','Cao Van Quyen',2,'25d55ad283aa40af464c76d713c7ad',1,'user','mao dien thuan thanh bac ninh trai dat giai ngan ha','0375549373');
 /*!40000 ALTER TABLE `user_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -493,7 +494,7 @@ CREATE TABLE `user_module` (
 
 LOCK TABLES `user_module` WRITE;
 /*!40000 ALTER TABLE `user_module` DISABLE KEYS */;
-INSERT INTO `user_module` VALUES (1,'nav-icon fas fa-tachometer-alt','Qu·∫£n tr·ªã',0,1,1,''),(2,NULL,'Ng∆∞·ªùi d√πng',1,2,1,'/nguoi-dung'),(3,NULL,'Nh√≥m ng∆∞·ªùi d√πng',1,3,1,'/nhom-nguoi-dung'),(4,'nav-icon fas fa-tachometer-alt','Qu·∫£n l√Ω s·∫£n ph·∫©m',0,1,1,''),(5,NULL,'S·∫£n ph·∫©m',4,2,1,'/san-pham'),(6,NULL,'Nh√≥m s·∫£n ph·∫©m',4,3,1,'/nhom-san-pham'),(7,'nav-icon fas fa-tachometer-alt','Qu·∫£n l√Ω gi·ªè h√†ng',0,1,1,NULL),(10,NULL,'Home Shopping',7,4,2,'/home-shopping');
+INSERT INTO `user_module` VALUES (1,'nav-icon fas fa-tachometer-alt','Qu·∫£n tr·ªã',0,1,1,''),(2,NULL,'Ng∆∞·ªùi d√πng',1,2,1,'/nguoi-dung'),(3,NULL,'Nh√≥m ng∆∞·ªùi d√πng',1,3,1,'/nhom-nguoi-dung'),(4,'nav-icon fas fa-tachometer-alt','Qu·∫£n l√Ω s·∫£n ph·∫©m',0,1,1,''),(5,NULL,'S·∫£n ph·∫©m',4,2,1,'/san-pham'),(6,NULL,'Nh√≥m s·∫£n ph·∫©m',4,3,1,'/nhom-san-pham'),(7,'nav-icon fas fa-tachometer-alt','Qu·∫£n l√Ω gi·ªè h√†ng',0,1,1,NULL),(8,NULL,'Home Shopping',7,2,1,'/home-shopping'),(9,NULL,'List Oder',7,3,1,'/list-order');
 /*!40000 ALTER TABLE `user_module` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -506,4 +507,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-05 13:58:30
+-- Dump completed on 2024-08-09 16:59:22

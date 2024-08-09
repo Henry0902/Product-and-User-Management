@@ -33,8 +33,7 @@ public class Checkout {
     private UserInfo userInfo;
 
     @OneToOne
-    @JoinColumn(name = "cart_id") // Đảm bảo rằng tên cột là cart_id
-    private Cart cart; // Đảm bảo ánh xạ @OneToOne tới Cart
+    private Cart cart;
 
     private String paymentMethod;
 }
